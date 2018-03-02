@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"bytes"
 
 	"github.com/chzyer/readline"
 	"github.com/fatih/color"
@@ -86,9 +87,12 @@ func (s *session) readWebsocket() {
 			return
 		}
 
-		fmt.Fprint(s.rl.Stdout(), rxSprintf("< %s\n", text))
-		size := len([]byte(text))
-		fmt.Fprint(s.rl.Stdout(), rxSprintf("< JSON payload size: %d bytes\n", size))
-		fmt.Fprint(s.rl.Stdout(), rxSprintf("<\n"))
+		heartbeat := []byte("{\"type\":\"heartbeat\"}")
+		if bytes.Compare([]byte(text), heartbeat) != 0 {
+			fmt.Fprint(s.rl.Stdout(), rxSprintf("< %s\n", text))
+			size := len([]byte(text))
+			fmt.Fprint(s.rl.Stdout(), rxSprintf("< JSON payload size: %d bytes\n", size))
+			fmt.Fprint(s.rl.Stdout(), rxSprintf("<\n"))
+		}
 	}
 }
