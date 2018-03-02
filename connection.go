@@ -87,5 +87,8 @@ func (s *session) readWebsocket() {
 		}
 
 		fmt.Fprint(s.rl.Stdout(), rxSprintf("< %s\n", text))
+		size := len([]byte(text))
+		fmt.Fprint(s.rl.Stdout(), rxSprintf("< JSON payload size: %d bytes\n", size))
+		fmt.Fprint(s.rl.Stdout(), rxSprintf("<\n"))
 	}
 }
